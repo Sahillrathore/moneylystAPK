@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "742985578792",
+    "project_id": "finance-tracker-7b929",
+    "storage_bucket": "finance-tracker-7b929.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742985578792:android:646e8ff433370824de781d",
+        "android_client_info": {
+          "package_name": "com.moneylystapk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5vhz6G3K5of0PL9qbz1OnkjFre--xrEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
