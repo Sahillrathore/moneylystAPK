@@ -89,6 +89,8 @@ const Home = () => {
     //   });
     // };
 
+    console.log(user);
+    
     useEffect(() => {
         if (!user) return;
 
