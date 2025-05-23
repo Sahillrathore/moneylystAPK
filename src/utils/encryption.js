@@ -4,7 +4,6 @@ import CryptoJS from "crypto-js";
 // Secret key (Store in .env for security)
 
 // const SECRET_KEY = "34w5drtfyugbhj78iugj"; // Change this in production
-const SECRET_KEY = "/gOryAWJ4iFgzuuFok71E492Uyb+PVNMql+qYaH1LpYjvhd6WFu4OZmE9KSZDQhD"
 
 // Recursive Encrypt Function
 export const encryptData = (data) => {

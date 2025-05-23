@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-// import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import firestore from "@react-native-firebase/firestore";
 
 import { decryptData } from "../utils/encryption";
@@ -14,12 +14,8 @@ const alphabetColors = {
     u: "#C2185B", v: "#7B1FA2", w: "#512DA8", x: "#303F9F", y: "#1976D2", z: "#0288D1",
 };
 
-const user = {
-    uid: "afyPQkqgbCSMaQfHEFuDffVF1EG3"
-}
-
 const RecentTransactions = () => {
-    // const { user } = useAuth();
+    const { user } = useAuth();
     const navigation = useNavigation();
     const [transactions, setTransactions] = useState([]);
 

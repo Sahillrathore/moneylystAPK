@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-// import { useAuth } from "../context/AuthContext"; // adjust path if needed
+import { useAuth } from "../../context/AuthContext";
 import firestore from "@react-native-firebase/firestore";
 // import SmsListener from "react-native-android-sms-listener";
 // import notifee from "@notifee/react-native";
@@ -34,13 +34,9 @@ const parseSMS = (message) => {
     return null;
 };
 
-const user = {
-    uid: 'afyPQkqgbCSMaQfHEFuDffVF1EG3'
-}
-
 const Home = () => {
     const navigation = useNavigation();
-    // const { user } = useAuth();
+    const { user } = useAuth();
     const [transactions, setTransactions] = useState([]);
     const [totalIncome, setTotalIncome] = useState(0);
     const [totalExpense, setTotalExpense] = useState(0);
@@ -98,7 +94,7 @@ const Home = () => {
 
         const fetchTransactions = async () => {
             try {
-                const docRef = firestore().collection("transactions").doc(decryptData('afyPQkqgbCSMaQfHEFuDffVF1EG3'));
+                const docRef = firestore().collection("transactions").doc(decryptData(user.uid));
                 const docSnap = await docRef.get();
 
                 if (docSnap.exists) {
@@ -144,11 +140,11 @@ const Home = () => {
         fetchTransactions();
     }, [user]);
 
-    // useEffect(() => {
-    //   if (!user) {
+    useEffect(() => {
+      if (!user) {
         navigation.navigate("Welcome");
-    //   }
-    // }, [user]);
+      }
+    }, [user]);
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
