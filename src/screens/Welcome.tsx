@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Image,
     StyleSheet,
@@ -16,6 +16,7 @@ type RootStackParamList = {
     Welcome: undefined;
     Signup: undefined;
     Login: undefined;
+    Home: undefined;
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Welcome'>;
@@ -24,6 +25,12 @@ const Welcome: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
     const {user} = useAuth();
     console.log(user);
+
+    useEffect(()=>{
+        if(user) {
+            navigation.replace('Home');
+        }
+    },[])
     
     return (
         <SafeAreaView style={styles.container}>

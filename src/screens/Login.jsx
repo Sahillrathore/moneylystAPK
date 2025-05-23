@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     ActivityIndicator,
     StyleSheet,
@@ -17,13 +17,19 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 
 const Login = () => {
-    const { setUser } = useAuth();
+    const { setUser, user } = useAuth();
     const navigation = useNavigation();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    useEffect(() => {
+        if(user) {
+            navigation.navigate('Home');
+        }
+    },[])
 
     const handleLogin = async () => {
         setError("");
@@ -35,10 +41,10 @@ const Login = () => {
         try {
             setLoading(true);
             const userCredential = await auth().signInWithEmailAndPassword(email, password);
-            const user = userCredential.user;
-            console.log(user);
+            const user1 = userCredential.user;
+            // console.log(user);
             
-            const userDoc = await firestore().collection("users").doc(user.uid).get();
+            const userDoc = await firestore().collection("users").doc(user1.uid).get();
             console.log(userDoc);
             if (!userDoc.exists) {
                 setError("User data not found.");
@@ -52,7 +58,7 @@ const Login = () => {
             try {
                 await AsyncStorage.setItem("user", JSON.stringify(userData));
                 setUser(userData);
-                console.log(userData);
+                console.log(user);
                 
             } catch (err) {
                 console.error("Failed to store user data:", err);
@@ -63,7 +69,7 @@ const Login = () => {
                 console.log('homepar');
                 
             } else {
-                navigation.reset({ index: 0, routes: [{ name: "Onboarding" }] });
+                navigation.reset({ index: 0, routes: [{ name: "Home" }] });
             }
         } catch (err) {
             console.log("Login Error:", err);

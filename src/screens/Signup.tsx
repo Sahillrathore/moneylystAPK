@@ -20,6 +20,7 @@ type RootStackParamList = {
     Login: undefined;
     Signup: undefined;
     Onboarding: undefined;
+    Home: undefined;
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>;
@@ -68,7 +69,8 @@ const Signup: React.FC = () => {
                 balance: 0,
             };
 
-            const encryptedUserData = encryptData(userData);
+            // const encryptedUserData = encryptData(userData);
+            const encryptedUserData = userData;
 
             const banks = {
                 banks: [
@@ -98,7 +100,7 @@ const Signup: React.FC = () => {
             await AsyncStorage.setItem('user', JSON.stringify(userData));
             setUser?.(userData);
             setNotification?.({ msg: 'Account created successfully!', type: 'success' });
-            navigation.replace('Onboarding');
+            navigation.replace('Home'); // change to 'Onboarding'
         } catch (error: any) {
             console.log(error);
             setNotification?.({ msg: error.message, type: 'error' });
