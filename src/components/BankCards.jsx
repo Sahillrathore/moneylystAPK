@@ -4,11 +4,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useNavigation } from "@react-navigation/native";
 
 
 const BankCards = ({user}) => {
     const [accounts, setAccounts] = useState([]);
     // const { user } = useAuth();
+    const navigation = useNavigation();
 
     useEffect(() => {
         const fetchBanks = async () => {
@@ -28,7 +30,9 @@ const BankCards = ({user}) => {
         <TouchableOpacity style={styles.container} activeOpacity={0.8}>
             <View style={styles.headerRow}>
                 <Text style={styles.title}>Accounts</Text>
-                <Text style={styles.arrow}>›</Text>
+                <Text style={styles.arrow}
+                onPress={()=>navigation.navigate("Accounts")}
+                >›</Text>
             </View>
 
             <View style={styles.accountGrid}>
