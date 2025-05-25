@@ -26,10 +26,16 @@ const Login = () => {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        if(user) {
-            navigation.navigate('Home');
-        }
-    },[])
+        const checkUser = async () => {
+            const currentUser = auth().currentUser; 
+
+            if (currentUser) {
+                navigation.replace('Main'); // or 'Main' if you have it as a screen
+            }
+        };
+
+        checkUser();
+    }, []);
 
     const handleLogin = async () => {
         setError("");
@@ -65,11 +71,11 @@ const Login = () => {
             }
 
             if (userData?.hasOnboarded) {
-                navigation.reset({ index: 0, routes: [{ name: "Home" }] });
+                navigation.reset({ index: 0, routes: [{ name: "Main" }] });
                 console.log('homepar');
                 
             } else {
-                navigation.reset({ index: 0, routes: [{ name: "Home" }] });
+                navigation.reset({ index: 0, routes: [{ name: "Main" }] });
             }
         } catch (err) {
             console.log("Login Error:", err);

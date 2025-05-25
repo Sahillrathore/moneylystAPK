@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     StyleSheet,
     Text,
@@ -36,6 +36,18 @@ const Signup: React.FC = () => {
     });
 
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const checkUser = async () => {
+            const currentUser = auth().currentUser;
+
+            if (currentUser) {
+                navigation.replace('Main'); // or 'Main' if you have it as a screen
+            }
+        };
+
+        checkUser();
+    }, []);
 
     const handleChange = (key: string, value: string) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
