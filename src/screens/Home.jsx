@@ -11,6 +11,7 @@ import {
     PermissionsAndroid,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+// import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from "../../context/AuthContext";
 import firestore from "@react-native-firebase/firestore";
@@ -90,7 +91,7 @@ const Home = () => {
     // };
 
     console.log(user);
-    
+
     useEffect(() => {
         if (!user) return;
 
@@ -143,9 +144,9 @@ const Home = () => {
     }, [user]);
 
     useEffect(() => {
-      if (!user) {
-        navigation.navigate("Welcome");
-      }
+        if (!user) {
+            navigation.navigate("Welcome");
+        }
     }, [user]);
 
     return (
@@ -153,13 +154,13 @@ const Home = () => {
             <ScrollView>
                 <View style={styles.container}>
                     {/* Header */}
-                    <View style={styles.header}>
+                    {/* <View style={styles.header}>
                         <TouchableOpacity
                         onPress={() => navigation.navigate("Welcome")}
                         >
                             <Text style={styles.bell}>🔔</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
 
                     {/* Balance Card */}
                     <View style={styles.balanceCard}>
