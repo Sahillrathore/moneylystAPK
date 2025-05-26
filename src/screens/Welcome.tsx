@@ -24,13 +24,18 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Welcome'>;
 const Welcome: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
     const {user} = useAuth();
-    console.log(user);
 
-    useEffect(()=>{
-        if(user) {
-            navigation.replace('Home');
-        }
-    },[])
+    useEffect(() => {
+        const checkUser = async () => {
+            const currentUser = auth().currentUser;
+
+            if (currentUser) {
+                navigation.replace('Main'); // or 'Main' if you have it as a screen
+            }
+        };
+
+        checkUser();
+    }, []);
     
     return (
         <SafeAreaView style={styles.container}>

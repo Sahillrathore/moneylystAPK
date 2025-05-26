@@ -45,28 +45,36 @@ const More = () => {
 
             <View style={styles.grid}>
                 <GridItem
-                    icon={<MaterialIcons name="person-outline" size={28} color="#26897C" />}
+                    icon={
+                        <Image
+                            source={require('../../assets/user.png')}
+                            style={styles.icon}
+                            resizeMode="contain"
+                        />
+                    }
                     label="Profile"
                 />
+
                 <GridItem
-                    icon={<FontAwesome name="gear" size={28} color="#26897C" />}
-                    label="Configuration"
+                    icon={
+                        <Image
+                        source={require('../../assets/settings.png')}
+                        style={styles.icon}
+                        resizeMode="contain"
+                        />
+                    }
                     onPress={() => navigation.navigate('Configuration')}
+                    label="Configuration"
                 />
+                
                 <GridItem
-                    icon={<FontAwesome name="bank" size={28} color="#26897C" />}
-                    label="Account"
-                />
-                <GridItem
-                    icon={<Ionicons name="mail-outline" size={28} color="#26897C" />}
-                    label="Feedback"
-                />
-                <GridItem
-                    icon={<Ionicons name="lock-closed-outline" size={28} color="#26897C" />}
-                    label="Login & Security"
-                />
-                <GridItem
-                    icon={<MaterialIcons name="logout" size={28} color="red" />}
+                    icon={
+                        <Image
+                            source={require('../../assets/logout.png')}
+                            style={styles.icon}
+                            resizeMode="contain"
+                        />
+                    }
                     label="Logout"
                     onPress={handleLogout}
                 />
@@ -129,5 +137,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 15,
         fontWeight: '500',
+    },
+    icon: {
+        width: 24,
+        height: 24,
     },
 });

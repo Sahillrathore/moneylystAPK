@@ -11,9 +11,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-// import DateTimePicker from '@react-native-community/datetimepicker';
-// import DateTimePicker from '@react-native-community/datetimepicker';
 
+import DateTimePicker from '@react-native-community/datetimepicker';
 import uuid from 'react-native-uuid';
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
@@ -25,6 +24,7 @@ const AddTransaction = () => {
     const navigation = useNavigation();
     const { user, setNotification } = useAuth();
 
+    const [businesses, setBusinesses] = useState([]);
     const [categories, setCategories] = useState([]);
     const [banks, setBanks] = useState([]);
     const [date, setDate] = useState(new Date());
@@ -34,10 +34,15 @@ const AddTransaction = () => {
     const [endDate, setEndDate] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const formatDate = date => {
+
+    const formatDate = (date) => {
         const d = new Date(date);
-        return `${d.getFullYear()}-${`0${d.getMonth() + 1}`.slice(-2)}-${`0${d.getDate()}`.slice(-2)}`;
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0'); // months are 0-based
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     };
+
     const [formData, SetFormData] = useState({
         type: 'income',
         amount: '',
@@ -47,7 +52,7 @@ const AddTransaction = () => {
         description: '',
         isRecurring: false,
         recurringType: '',
-        business: '',
+        businessName: '',
     });
 
     useLayoutEffect(() => {
@@ -60,8 +65,8 @@ const AddTransaction = () => {
 
 
     const updateBankBalance = async (bankId, amount, type) => {
-        console.log(bankId, amount, type);
-        
+        // console.log(bankId, amount, type);
+
         const ref = firestore().collection('banks').doc(decryptData(user.uid));
         const snapshot = await ref.get();
         if (snapshot.exists) {
@@ -80,7 +85,26 @@ const AddTransaction = () => {
             await ref.update({ banks: updatedBanks });
             fetchBanks();
         }
-      };
+    };
+
+    const fetchBusinesses = async () => {
+        try {
+            const ref = firestore().collection('business').doc(decryptData(user.uid));
+            const snapshot = await ref.get();
+            if (snapshot.exists) {
+                const data = snapshot.data();
+                console.log(data);
+
+                // Assuming it's like: { businesses: [{ name: 'Business A' }, ...] }
+                setBusinesses(data?.businesses?.map(b => b.name) || []);
+                // console.log(data?.);
+
+            }
+        } catch (err) {
+            console.error('Error fetching businesses:', err);
+        }
+    };
+
 
     const calculateNextExecution = (startDate, recurringType) => {
         let next = new Date(startDate);
@@ -111,17 +135,17 @@ const AddTransaction = () => {
             const transactionData = {
                 transactionId,
                 ...formData,
+                // date: normalizeDate(formData.date),
                 amount: parseFloat(formData.amount),
                 date: formatDate(formData.date),
                 createdAt: Date.now(),
             };
-            console.log('ifTrue');
-            
+
             if (formData.accountName) {
                 const bank = banks.find(b => b.accountName === formData.accountName);
                 console.log('ifTrue22');
                 console.log(formData.date, bank.createDate);
-                
+
                 if (formData.date >= bank.createDate) {
                     console.log('ifTrue3');
 
@@ -132,9 +156,11 @@ const AddTransaction = () => {
             await docRef.set({ [typeField]: firestore.FieldValue.arrayUnion(transactionData) }, { merge: true });
 
             console.log('Transaction Data added', transactionData);
-            
-            await firestore().collection('business_transactions').doc(decryptData(user.uid))
-                .set({ transactions: firestore.FieldValue.arrayUnion({ ...transactionData, date: formData.date }) }, { merge: true });
+
+            if (formData.businessName) {
+                await firestore().collection('business_transactions').doc(decryptData(user.uid))
+                    .set({ transactions: firestore.FieldValue.arrayUnion({ ...transactionData, date: formData.date }) }, { merge: true });
+            }
 
             if (isRecurring) {
                 const recurringTransaction = {
@@ -160,16 +186,18 @@ const AddTransaction = () => {
                 description: '',
                 isRecurring: false,
                 recurringType: '',
-                business: '',
+                businessName: '',
             });
             setIsRecurring(false);
             setEndDate('');
         } catch (err) {
             console.error('Transaction Error:', err);
+            setNotification({ msg: 'Please Try Again', type: 'error' });
+
         } finally {
             setIsSubmitting(false);
         }
-      };
+    };
 
     const fetchBanks = async () => {
         const ref = firestore().collection('banks').doc(decryptData(user.uid));
@@ -182,10 +210,11 @@ const AddTransaction = () => {
         return ref.onSnapshot(docSnap => {
             if (docSnap.exists) setCategories(decryptData(docSnap.data()).category);
         });
-      };
+    };
 
     useEffect(() => {
         fetchBanks();
+        fetchBusinesses();
         const unsubscribe = fetchCategories();
         return () => unsubscribe();
     }, [user?.uid]);
@@ -202,7 +231,7 @@ const AddTransaction = () => {
             </View>
 
             <Text style={styles.label}>Amount</Text>
-            <TextInput style={styles.input} keyboardType="numeric" placeholder="Enter amount" value={formData.amount} onChangeText={text => handleDataChange('amount', text)} />
+            <TextInput style={styles.input} keyboardType="numeric" placeholderTextColor='#888' placeholder="Enter amount" value={formData.amount} onChangeText={text => handleDataChange('amount', text)} />
 
             <Text style={styles.label}>Bank</Text>
             <DropDown data={banks.map(b => b.accountName)} SetFormData={SetFormData} keyName="accountName" placeholder="Select Bank" />
@@ -211,26 +240,35 @@ const AddTransaction = () => {
             <DropDown data={categories.filter(c => c.type === formData.type).map(c => c.category)} SetFormData={SetFormData} keyName="category" placeholder="Select Category" />
 
             <Text style={styles.label}>Business</Text>
-            <TextInput style={styles.input} placeholder="Business (optional)" value={formData.business} onChangeText={text => handleDataChange('business', text)} />
+            <DropDown
+                data={businesses}
+                SetFormData={SetFormData}
+                keyName="businessName"
+                placeholder="Select Business (optional)"
+            />
 
             <Text style={styles.label}>Date</Text>
             <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
                 <Text>{formatDate(formData.date)}</Text>
             </TouchableOpacity>
-            {/* {showDatePicker && (
+
+            {showDatePicker && (
                 <DateTimePicker
                     value={new Date(formData.date)}
                     mode="date"
                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                     onChange={(event, selectedDate) => {
                         setShowDatePicker(false);
-                        if (selectedDate) handleDataChange('date', selectedDate);
+                        if (selectedDate) {
+                            setDate(selectedDate);
+                            handleDataChange('date', selectedDate);
+                        }
                     }}
                 />
-            )} */}
+            )}
 
             <Text style={styles.label}>Description</Text>
-            <TextInput style={styles.input} placeholder="Description (optional)" value={formData.description} onChangeText={text => handleDataChange('description', text)} />
+            <TextInput style={styles.input} placeholder="Description (optional)" placeholderTextColor='#888' value={formData.description} onChangeText={text => handleDataChange('description', text)} />
 
             <View style={styles.row}>
                 <Text style={styles.label}>Recurring Transaction</Text>

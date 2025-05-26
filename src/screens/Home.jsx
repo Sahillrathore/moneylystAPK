@@ -150,58 +150,55 @@ const Home = () => {
     }, [user]);
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-            <ScrollView>
-                <View style={styles.container}>
-                    {/* Header */}
-                    {/* <View style={styles.header}>
-                        <TouchableOpacity
-                        onPress={() => navigation.navigate("Welcome")}
-                        >
-                            <Text style={styles.bell}>🔔</Text>
-                        </TouchableOpacity>
-                    </View> */}
-
-                    {/* Balance Card */}
-                    <View style={styles.balanceCard}>
-                        <Text style={styles.totalText}>Total Balance</Text>
-                        <Text style={styles.amount}>₹ {balance}</Text>
-                        <View style={styles.balanceRow}>
-                            <View>
-                                <Text style={styles.label}>Income</Text>
-                                <Text style={[styles.income, styles.balanceAmount]}>
-                                    ₹ {totalIncome}
-                                </Text>
-                            </View>
-                            <View>
-                                <Text style={styles.label}>Expenses</Text>
-                                <Text style={[styles.expense, styles.balanceAmount]}>
-                                    ₹ {totalExpense}
-                                </Text>
+        
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+            <FlatList
+                data={[]} // empty since we don't need this FlatList to render actual data
+                renderItem={null}
+                ListHeaderComponent={
+                    <>
+                        {/* Balance Card */}
+                        <View style={styles.container}>
+                            <View style={styles.balanceCard}>
+                                <Text style={styles.totalText}>Total Balance</Text>
+                                <Text style={styles.amount}>₹ {balance}</Text>
+                                <View style={styles.balanceRow}>
+                                    <View>
+                                        <Text style={styles.label}>Income</Text>
+                                        <Text style={[styles.income, styles.balanceAmount]}>
+                                            ₹ {totalIncome}
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.label}>Expenses</Text>
+                                        <Text style={[styles.expense, styles.balanceAmount]}>
+                                            ₹ {totalExpense}
+                                        </Text>
+                                    </View>
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </View>
 
-                <View>
-                    <BankCards user={user} />
-                </View>
+                        <View>
+                            <BankCards user={user} />
+                        </View>
 
-                {/* Recent Transactions */}
-                <View style={{ backgroundColor: "white" }}>
-                    <RecentTransactions />
-                </View>
-            </ScrollView>
+                        <View style={{ backgroundColor: 'white' }}>
+                            <RecentTransactions />
+                        </View>
+                    </>
+                }
+                keyExtractor={(_, index) => index.toString()}
+                contentContainerStyle={{ paddingBottom: 100 }}
+            />
 
             {/* Floating Button */}
-            <View style={{ position: "absolute", bottom: 40, right: 20 }}>
+            <View style={{ position: 'absolute', bottom: 40, right: 20 }}>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate("AddTransaction")}
+                    onPress={() => navigation.navigate('AddTransaction')}
                     style={styles.floatingButton}
                 >
-                    <Text style={{ color: "white", fontWeight: "bold", fontSize: 30 }}>
-                        +
-                    </Text>
+                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 30 }}>+</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

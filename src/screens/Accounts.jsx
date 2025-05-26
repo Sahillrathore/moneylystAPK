@@ -6,6 +6,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Image,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
@@ -71,7 +72,11 @@ const Accounts = ({ navigation }) => {
                             style={styles.actionButton}
                             onPress={() => setShowCreateModal(true)}
                         >
-                            <Ionicons name="add" size={34} color="#26897C" />
+                            <Image
+                                source={require('../../assets/add.png')}
+                                style={styles.icon}
+                                resizeMode="contain"
+                            />
                             
                         </TouchableOpacity>
                         <Text style={styles.actionText}>Add</Text>
@@ -79,7 +84,12 @@ const Accounts = ({ navigation }) => {
 
                     <View>
                         <TouchableOpacity style={styles.actionButton} onPress={() => { }}>
-                            <Ionicons name="send" size={28} color="#26897C" />
+                            {/* <Ionicons name="send" size={28} color="#26897C" /> */}
+                            <Image
+                                source={require('../../assets/transfer.png')}
+                                style={styles.icon}
+                                resizeMode="contain"
+                            />
                         </TouchableOpacity>
                         <Text style={styles.actionText}>Transfer</Text>
                     </View>
@@ -210,5 +220,9 @@ const styles = StyleSheet.create({
     activeDefault: {
         backgroundColor: '#26897C',
         borderColor: '#26897C',
+    },
+    icon: {
+        width: 24,
+        height: 24,
     },
 });
