@@ -112,7 +112,7 @@ const Signup: React.FC = () => {
             await AsyncStorage.setItem('user', JSON.stringify(userData));
             setUser?.(userData);
             setNotification?.({ msg: 'Account created successfully!', type: 'success' });
-            navigation.replace('Home'); // change to 'Onboarding'
+            navigation.replace('Main'); // change to 'Onboarding'
         } catch (error: any) {
             console.log(error);
             setNotification?.({ msg: error.message, type: 'error' });
@@ -203,6 +203,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         fontSize: 18,
         borderColor: '#e5e7eb',
+        color: "#222"
+
     },
     button: {
         backgroundColor: '#26897C',

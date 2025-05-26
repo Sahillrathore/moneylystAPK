@@ -90,6 +90,7 @@ const Home = () => {
     //   });
     // };
 
+
     console.log(user);
 
     useEffect(() => {
@@ -102,24 +103,24 @@ const Home = () => {
 
                 if (docSnap.exists) {
                     const data = decryptData(docSnap.data());
-                    const incomeList = data.income || [];
-                    const expenseList = data.expense || [];
+                    const incomeList = data?.income || [];
+                    const expenseList = data?.expense || [];
 
                     const now = new Date();
                     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-                    const filteredIncome = incomeList.filter(
+                    const filteredIncome = incomeList?.filter(
                         (t) => new Date(t.date) >= startOfMonth
                     );
-                    const filteredExpense = expenseList.filter(
+                    const filteredExpense = expenseList?.filter(
                         (t) => new Date(t.date) >= startOfMonth
                     );
 
-                    const totalIncomeCalc = filteredIncome.reduce(
+                    const totalIncomeCalc = filteredIncome?.reduce(
                         (acc, t) => acc + t.amount,
                         0
                     );
-                    const totalExpenseCalc = filteredExpense.reduce(
+                    const totalExpenseCalc = filteredExpense?.reduce(
                         (acc, t) => acc + t.amount,
                         0
                     );
@@ -130,8 +131,8 @@ const Home = () => {
 
                     setTransactions(
                         [
-                            ...filteredIncome.map((t) => ({ ...t, type: "income" })),
-                            ...filteredExpense.map((t) => ({ ...t, type: "expense" })),
+                            ...filteredIncome?.map((t) => ({ ...t, type: "income" })),
+                            ...filteredExpense?.map((t) => ({ ...t, type: "expense" })),
                         ].sort((a, b) => new Date(b.date) - new Date(a.date))
                     );
                 }
