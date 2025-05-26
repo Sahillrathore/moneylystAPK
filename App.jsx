@@ -14,6 +14,8 @@ import BottomTabs from "./src/navigation/BottomTabs"; // ✅ NEW
 import Configuration from "./src/screens/Configuration";
 import Categories from "./src/components/Categories";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import ToastNotification from "./src/components/ToastNotification";
+import NewCategory from "./src/screens/NewCategory";
 
 const Stack = createStackNavigator();
 
@@ -31,8 +33,10 @@ export default function App() {
               <Stack.Screen name="AddTransaction" component={AddTransaction} />
               <Stack.Screen name="Configuration" component={Configuration} />
               <Stack.Screen name="Categories" component={Categories} />
+              <Stack.Screen name="NewCategory" component={NewCategory} />
             </Stack.Navigator>
           </NavigationContainer>
+          <ToastNotification/>
         </AuthProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
