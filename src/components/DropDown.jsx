@@ -44,28 +44,37 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#fff",
         borderRadius: 8,
-        padding: 10,
+        paddingVertical: 10, // ✅ more touch area
+        paddingHorizontal: 12,
         marginTop: 5,
+        marginBottom: 4,
         borderWidth: 1,
         borderColor: "#ccc",
     },
+
     dropdownButtonTxtStyle: {
         flex: 1,
-        fontSize: 16,
-        color: "#151E26",
+        fontSize: 14,
+        color: "#888",
     },
+   
     dropdownMenuStyle: {
         backgroundColor: "#E9ECEF",
         borderRadius: 8,
+        maxHeight: 250, // ✅ ensures scrollable height
+        paddingVertical: 5,
     },
+      
     dropdownItemStyle: {
         width: "100%",
         flexDirection: "row",
-        paddingHorizontal: 12,
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
-        paddingVertical: 10,
+        paddingHorizontal: 12,
+        paddingVertical: 14, // ✅ increase height
+        minHeight: 48,       // ✅ optional for touch target size
     },
+      
     dropdownItemTxtStyle: {
         flex: 1,
         fontSize: 16,

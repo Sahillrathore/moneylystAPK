@@ -20,7 +20,6 @@ const CreateBankModal = ({ visible, onClose, fetchBanks }) => {
     const { user, setNotification } = useAuth();
     const [form, setForm] = useState({
         accountName: '',
-        accountNumber: '',
         bankName: '',
         accountType: '',
         createDate: new Date().toISOString().split('T')[0],
@@ -50,7 +49,7 @@ const CreateBankModal = ({ visible, onClose, fetchBanks }) => {
     const handleChange = (key, value) => setForm({ ...form, [key]: value });
 
     const saveBank = async () => {
-        if (!form.accountName || !form.accountNumber || !form.bankName || !form.accountType) {
+        if (!form.accountName || !form.bankName || !form.accountType) {
             return setNotification({ msg: 'Please fill all required fields.', type: 'error' });
         }
 
@@ -85,7 +84,6 @@ const CreateBankModal = ({ visible, onClose, fetchBanks }) => {
         onClose();
         setForm({
             accountName: '',
-            accountNumber: '',
             bankName: '',
             accountType: '',
             createDate: new Date().toISOString().split('T')[0],
@@ -102,31 +100,38 @@ const CreateBankModal = ({ visible, onClose, fetchBanks }) => {
 
                         <TextInput
                             placeholder="Account Name"
+                            placeholderTextColor="#888"
                             style={styles.input}
                             value={form.accountName}
                             onChangeText={(t) => handleChange('accountName', t)}
                         />
-                        <TextInput
+
+                        {/* <TextInput
                             placeholder="Account Number"
+                            placeholderTextColor="#888"
                             keyboardType="number-pad"
                             style={styles.input}
                             value={form.accountNumber}
                             onChangeText={(t) => handleChange('accountNumber', t)}
-                        />
+                        /> */}
                         <TextInput
                             placeholder="Bank Name"
+                            placeholderTextColor="#888"
                             style={styles.input}
                             value={form.bankName}
                             onChangeText={(t) => handleChange('bankName', t)}
                         />
                         <DropDown
-                            data={["Saving", "Current", "Salary"]}
+                            data={["Bank", "Debit Card", "Credit Card", "Other"]}
+                            placeholderTextColor="#888"
                             SetFormData={setForm}
                             keyName="accountType"
+                            // style={styles.dropdown}
                             placeholder="Account Type"
                         />
                         <TextInput
                             placeholder="Initial Balance (optional)"
+                            placeholderTextColor="#888"
                             keyboardType="numeric"
                             style={styles.input}
                             value={form.initialBalance}
@@ -174,6 +179,15 @@ const styles = StyleSheet.create({
         padding: 10,
         marginVertical: 5,
     },
+    dropdown: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        padding: 12,
+        marginVertical: 6,
+        fontSize: 16,
+        color: '#000',
+    },      
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
