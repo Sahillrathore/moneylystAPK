@@ -8,6 +8,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Image,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -107,11 +108,15 @@ const Categories = () => {
                         style={{ marginRight: 15 }}
                         onPress={() => navigation.navigate('NewCategory', { type })}
                     >
-                        <Ionicons name="add" size={24} color="black" />
+                        <Image
+                            source={require('../../assets/add.png')}
+                            style={styles.icon}
+                            resizeMode="contain"
+                        />
                     </TouchableOpacity>
                 }
             />
-            <ScrollView>
+            {/* <ScrollView> */}
                 <FlatList
                     data={categories}
                     keyExtractor={(item, index) => index.toString()}
@@ -120,7 +125,12 @@ const Categories = () => {
                         <View style={styles.itemRow}>
                             <Text style={styles.itemText}>{item?.category}</Text>
                             <TouchableOpacity onPress={() => handleDelete(item)} style={styles.rightIcons}>
-                                <MaterialIcons name="delete-outline" size={24} color="red" />
+                                {/* <MaterialIcons name="delete-outline" size={24} color="red" /> */}
+                                <Image
+                                    source={require('../../assets/delete.png')}
+                                    style={styles.icon}
+                                    resizeMode="contain"
+                                />
                             </TouchableOpacity>
                         </View>
                     )}
@@ -130,7 +140,7 @@ const Categories = () => {
                         </Text>
                     }
                 />
-            </ScrollView>
+            {/* </ScrollView> */}
         </View>
     );
 };
@@ -157,5 +167,9 @@ const styles = StyleSheet.create({
     rightIcons: {
         flexDirection: 'row',
         gap: 15,
+    },
+    icon: {
+        width: 24,
+        height: 24,
     },
 });

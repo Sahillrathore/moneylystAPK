@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 // import { useAuth } from '../context/AuthContext';
 import firestore from '@react-native-firebase/firestore';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -7,7 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useNavigation } from "@react-navigation/native";
 
 
-const BankCards = ({user}) => {
+const BankCards = ({ user }) => {
     const [accounts, setAccounts] = useState([]);
     // const { user } = useAuth();
     const navigation = useNavigation();
@@ -31,7 +31,7 @@ const BankCards = ({user}) => {
             <View style={styles.headerRow}>
                 <Text style={styles.title}>Accounts</Text>
                 <Text style={styles.arrow}
-                onPress={()=>navigation.navigate("Accounts")}
+                    onPress={() => navigation.navigate("Accounts")}
                 >›</Text>
             </View>
 
@@ -43,9 +43,21 @@ const BankCards = ({user}) => {
                             { backgroundColor: account?.bgColor || '#ccc' }
                         ]}>
                             {account?.accountType === "Cash" ? (
-                                <FontAwesome5 name="money-bill" size={24} color="#26897C" />
+                                // <FontAwesome5 name="money-bill" size={24} color="#26897C" />
+                                <Image
+                                    // source={{ uri: 'https://cdn-icons-png.flaticon.com/512/190/190411.png' }}
+                                    source={require('../../assets/bank.png')}
+                                    style={styles.icon}
+                                    resizeMode="contain"
+                                />
                             ) : (
-                                <MaterialCommunityIcons name="bank" size={24} color="#26897C" />
+                                // <MaterialCommunityIcons name="bank" size={24} color="#26897C" />
+                                <Image
+                                    // source={{ uri: 'https://cdn-icons-png.flaticon.com/512/190/190411.png' }}
+                                    source={require('../../assets/bank.png')}
+                                    style={styles.icon}
+                                    resizeMode="contain"
+                                />
                             )}
                         </View>
                         <View style={{ flex: '' }}>
@@ -114,5 +126,9 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 'bold',
         color: '#000',
+    },
+    icon: {
+        width: 24,
+        height: 24,
     },
 });
