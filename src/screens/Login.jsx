@@ -72,10 +72,9 @@ const Login = () => {
 
             if (userData?.hasOnboarded) {
                 navigation.reset({ index: 0, routes: [{ name: "Main" }] });
-                console.log('homepar');
                 
             } else {
-                navigation.reset({ index: 0, routes: [{ name: "Main" }] });
+                navigation.reset({ index: 0, routes: [{ name: "Onboarding" }] });
             }
         } catch (err) {
             console.log("Login Error:", err);

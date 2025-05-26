@@ -8,9 +8,6 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 
@@ -21,21 +18,30 @@ const More = () => {
     const { user, setUser } = useAuth();
     const navigation = useNavigation();
 
-    const handleLogout = () => {
-        Alert.alert('Logout', 'Are you sure you want to logout?', [
-            { text: 'Cancel', style: 'cancel' },
-            {
-                text: 'Logout',
-                style: 'destructive',
-                onPress: async () => {
-                    await auth().signOut();
-                    setUser(null);
-                    navigation.replace('Login');
-                },
-            },
-        ]);
-    };
+    // const handleLogout = () => {
+    //     Alert.alert('Logout', 'Are you sure you want to logout?', [
+    //         { text: 'Cancel', style: 'cancel' },
+    //         {
+    //             text: 'Logout',
+    //             style: 'destructive',
+    //             onPress: async () => {
+    //                 await auth().signOut();
+    //                 setUser(null);
+    //                 navigation.replace('Login');
+    //             },
+    //         },
+    //     ]);
+    // };
 
+    const handleLogout = async () => {
+        console.log('logout');
+        
+        await auth().signOut();
+        setUser(null);
+        // navigation.replace('Login');
+    };
+      
+    
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.avatarSection}>

@@ -29,16 +29,16 @@ const RecentTransactions = () => {
 
                 if (docSnap.exists) {
                     const data = decryptData(docSnap.data());
-                    const incomes = data.income || [];
-                    const expenses = data.expense || [];
+                    const incomes = data?.income || [];
+                    const expenses = data?.expense || [];
 
                     let combinedTransactions = [
-                        ...incomes.map((tx) => ({ ...tx, type: "income" })),
-                        ...expenses.map((tx) => ({ ...tx, type: "expense" })),
+                        ...incomes?.map((tx) => ({ ...tx, type: "income" })),
+                        ...expenses?.map((tx) => ({ ...tx, type: "expense" })),
                     ];
 
                     combinedTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    const recentFive = combinedTransactions.slice(0, 5);
+                    const recentFive = combinedTransactions?.slice(0, 5);
                     setTransactions(recentFive);
                 } else {
                     console.log("No transaction data found for this user.");

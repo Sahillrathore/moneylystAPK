@@ -5,15 +5,16 @@ import { useAuth } from "../../context/AuthContext";
 const ToastNotification = () => {
     const { notification, setNotification } = useAuth();
 
-    if (!notification) return null; // Optional: to prevent rendering if there's no notification
-
+    
     useEffect(() => {
         const id = setTimeout(() => {
             setNotification(null);
         }, 2000);
         return () => clearTimeout(id);
-    }, []);
-
+    }, [notification]);
+    
+    if (!notification) return null; // Optional: to prevent rendering if there's no notification
+    
     return (
         <View style={styles.container}>
             <View

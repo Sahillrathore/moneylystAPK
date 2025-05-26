@@ -98,7 +98,7 @@ const Home = () => {
 
         const fetchTransactions = async () => {
             try {
-                const docRef = firestore().collection("transactions").doc(decryptData(user.uid));
+                const docRef = firestore().collection("transactions").doc(decryptData(user?.uid));
                 const docSnap = await docRef.get();
 
                 if (docSnap.exists) {
