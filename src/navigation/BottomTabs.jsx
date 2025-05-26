@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Image, View } from 'react-native';
 
 import Home from '../screens/Home';
 import Accounts from '../screens/Accounts';
@@ -12,22 +12,47 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
+// Image imports (update paths based on your actual structure)
+const icons = {
+    Home: {
+        active: require('../../assets/home.png'),
+        inactive: require('../../assets/home.png'),
+    },
+    Accounts: {
+        active: require('../../assets/wallet.png'),
+        inactive: require('../../assets/wallet.png'),
+    },
+    TransactionHistory: {
+        active: require('../../assets/transaction.png'),
+        inactive: require('../../assets/transaction.png'),
+    },
+    More: {
+        active: require('../../assets/option.png'),
+        inactive: require('../../assets/option.png'),
+    },
+};
+
 const BottomTabs = () => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Tab.Navigator
                 screenOptions={({ route }) => ({
                     headerShown: false,
-                    tabBarIcon: ({ focused, color, size }) => {
-                        let iconName;
-                        if (route.name === 'Home') iconName = focused ? 'home' : 'home-outline';
-                        else if (route.name === 'Accounts') iconName = focused ? 'wallet' : 'wallet-outline';
-                        else if (route.name === 'Transactions') iconName = focused ? 'home' : 'home-outline';
-                        else if (route.name === 'More') iconName = focused ? 'wallet' : 'wallet-outline';
-                        return <Ionicons name={iconName} size={size} color={color} />;
+                    tabBarIcon: ({ focused }) => {
+                        const icon = icons[route.name][focused ? 'active' : 'inactive'];
+                        return (
+                            <Image
+                                source={icon}
+                                style={{ width: 24, height: 24, resizeMode: 'contain' }}
+                            />
+                        );
                     },
-                    tabBarActiveTintColor: '#26897C',
-                    tabBarInactiveTintColor: 'gray',
+                    tabBarShowLabel: false,
+                    tabBarStyle: {
+                        height: 60,
+                        paddingBottom: 6,
+                        paddingTop: 6,
+                    },
                 })}
             >
                 <Tab.Screen name="Home" component={Home} />
