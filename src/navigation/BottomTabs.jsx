@@ -9,6 +9,7 @@ import Accounts from '../screens/Accounts';
 import TransactionHistory from '../screens/TransactionHistory';
 import More from '../screens/More';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Analytics from '../screens/Analytics';
 
 const Tab = createBottomTabNavigator();
 
@@ -28,6 +29,10 @@ const icons = {
     },
     More: {
         active: require('../../assets/option.png'),
+        inactive: require('../../assets/option.png'),
+    },
+    Analytics: {
+        active: require('../../assets/wallet.png'),
         inactive: require('../../assets/option.png'),
     },
 };
@@ -59,6 +64,7 @@ const BottomTabs = () => {
                 <Tab.Screen name="Accounts" component={Accounts} />
                 <Tab.Screen name="TransactionHistory" component={TransactionHistory} />
                 <Tab.Screen name="More" component={More} />
+                <Tab.Screen name="Analytics" component={Analytics} />
             </Tab.Navigator>
         </SafeAreaView>
     );
