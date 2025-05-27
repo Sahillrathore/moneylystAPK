@@ -25,6 +25,7 @@ DerivedData
 # Android/IntelliJ
 #
 build/
+gradle.properties
 .idea
 .gradle
 local.properties
@@ -40,6 +41,7 @@ local.properties
 node_modules/
 npm-debug.log
 yarn-error.log
+.env
 
 # fastlane
 #
