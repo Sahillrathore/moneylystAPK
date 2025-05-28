@@ -12,6 +12,7 @@ import {
     View,
 } from 'react-native';
 
+import { useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import uuid from 'react-native-uuid';
 import { useNavigation } from '@react-navigation/native';
@@ -23,6 +24,9 @@ import { decryptData } from '../utils/encryption';
 const AddTransaction = () => {
     const navigation = useNavigation();
     const { user, setNotification } = useAuth();
+
+    const route = useRoute();
+    const selectedType = route.params?.selectedType;
 
     const [businesses, setBusinesses] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -54,6 +58,12 @@ const AddTransaction = () => {
         recurringType: '',
         businessName: '',
     });
+
+    useEffect(() => {
+        if (selectedType === 'income' || selectedType === 'expense') {
+            SetFormData(prev => ({ ...prev, type: selectedType }));
+        }
+    }, [selectedType]);
 
     useLayoutEffect(() => {
         navigation.setOptions({ headerTitle: 'Add Transaction' });
