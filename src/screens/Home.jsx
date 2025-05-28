@@ -164,7 +164,7 @@ const Home = () => {
 
     return (
         
-        <SafeAreaView style={{ flex: 1, backgroundColor: '' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <FlatList
                 data={[]} // empty since we don't need this FlatList to render actual data
                 renderItem={null}
