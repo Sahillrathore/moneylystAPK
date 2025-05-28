@@ -19,6 +19,9 @@ import ToastNotification from "./src/components/ToastNotification";
 import NewCategory from "./src/screens/NewCategory";
 import Onboarding from "./src/screens/Onboarding";
 import { View, ActivityIndicator } from "react-native";
+import AddLoan from "./src/screens/AddLoan";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import LenderLoanDetails from "./src/screens/LenderLoanDetails";
 
 const Stack = createStackNavigator();
 
@@ -34,25 +37,29 @@ function AppNavigator() {
   }
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {!user ? (
-        <>
-          <Stack.Screen name="Welcome" component={Welcome} />
-          <Stack.Screen name="Signup" component={Signup} />
-          <Stack.Screen name="Login" component={Login} />
-        </>
-      ) : !user.hasOnboarded ? (
-        <Stack.Screen name="Onboarding" component={Onboarding} />
-      ) : (
-        <>
-          <Stack.Screen name="Main" component={BottomTabs} />
-          <Stack.Screen name="AddTransaction" component={AddTransaction} />
-          <Stack.Screen name="Configuration" component={Configuration} />
-          <Stack.Screen name="Categories" component={Categories} />
-          <Stack.Screen name="NewCategory" component={NewCategory} />
-        </>
-      )}
-    </Stack.Navigator>
+    <SafeAreaView style={{ flex: 1 }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {!user ? (
+          <>
+            <Stack.Screen name="Welcome" component={Welcome} />
+            <Stack.Screen name="Signup" component={Signup} />
+            <Stack.Screen name="Login" component={Login} />
+          </>
+        ) : !user.hasOnboarded ? (
+          <Stack.Screen name="Onboarding" component={Onboarding} />
+        ) : (
+          <>
+            <Stack.Screen name="Main" component={BottomTabs} />
+            <Stack.Screen name="AddTransaction" component={AddTransaction} />
+            <Stack.Screen name="AddLoan" component={AddLoan} />
+            <Stack.Screen name="Configuration" component={Configuration} />
+            <Stack.Screen name="Categories" component={Categories} />
+            <Stack.Screen name="NewCategory" component={NewCategory} />
+            <Stack.Screen name="LenderLoanDetails" component={LenderLoanDetails} />
+          </>
+        )}
+      </Stack.Navigator>
+    </SafeAreaView>
   );
 }
 
