@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -8,9 +8,9 @@ import {
     ScrollView,
     SafeAreaView,
     Platform,
-    PermissionsAndroid,
+    PermissionsAndroid, 
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 // import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from "../../context/AuthContext";
@@ -42,6 +42,7 @@ const Home = () => {
     const [totalIncome, setTotalIncome] = useState(0);
     const [totalExpense, setTotalExpense] = useState(0);
     const [balance, setBalance] = useState(0);
+    const [showMenu, setShowMenu] = useState(false);
 
     // useEffect(() => {
     //   const requestSMSPermission = async () => {
@@ -91,58 +92,69 @@ const Home = () => {
     // };
 
 
-    console.log(user);
+    // console.log(user);
 
-    useEffect(() => {
-        if (!user) return;
+    const handleSelect = (type) => {
+        setShowMenu(false);
+        if (type === 'loan') {
+            navigation.navigate('AddLoan');
+        } else {
+            navigation.navigate('AddTransaction', { selectedType: type });
+        }
+    };
 
-        const fetchTransactions = async () => {
-            try {
-                const docRef = firestore().collection("transactions").doc(decryptData(user?.uid));
-                const docSnap = await docRef.get();
+    useFocusEffect(
+        useCallback(() => {
+            if (!user) return;
 
-                if (docSnap.exists) {
-                    const data = decryptData(docSnap.data());
-                    const incomeList = data?.income || [];
-                    const expenseList = data?.expense || [];
+            const fetchTransactions = async () => {
+                try {
+                    const docRef = firestore().collection("transactions").doc(decryptData(user?.uid));
+                    const docSnap = await docRef.get();
 
-                    const now = new Date();
-                    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                    if (docSnap.exists) {
+                        const data = decryptData(docSnap.data());
+                        const incomeList = data?.income || [];
+                        const expenseList = data?.expense || [];
 
-                    const filteredIncome = incomeList?.filter(
-                        (t) => new Date(t.date) >= startOfMonth
-                    );
-                    const filteredExpense = expenseList?.filter(
-                        (t) => new Date(t.date) >= startOfMonth
-                    );
+                        const now = new Date();
+                        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-                    const totalIncomeCalc = filteredIncome?.reduce(
-                        (acc, t) => acc + t.amount,
-                        0
-                    );
-                    const totalExpenseCalc = filteredExpense?.reduce(
-                        (acc, t) => acc + t.amount,
-                        0
-                    );
+                        const filteredIncome = incomeList?.filter(
+                            (t) => new Date(t.date) >= startOfMonth
+                        );
+                        const filteredExpense = expenseList?.filter(
+                            (t) => new Date(t.date) >= startOfMonth
+                        );
 
-                    setTotalIncome(totalIncomeCalc);
-                    setTotalExpense(totalExpenseCalc);
-                    setBalance(totalIncomeCalc - totalExpenseCalc);
+                        const totalIncomeCalc = filteredIncome?.reduce(
+                            (acc, t) => acc + t.amount,
+                            0
+                        );
+                        const totalExpenseCalc = filteredExpense?.reduce(
+                            (acc, t) => acc + t.amount,
+                            0
+                        );
 
-                    setTransactions(
-                        [
-                            ...filteredIncome?.map((t) => ({ ...t, type: "income" })),
-                            ...filteredExpense?.map((t) => ({ ...t, type: "expense" })),
-                        ].sort((a, b) => new Date(b.date) - new Date(a.date))
-                    );
+                        setTotalIncome(totalIncomeCalc);
+                        setTotalExpense(totalExpenseCalc);
+                        setBalance(totalIncomeCalc - totalExpenseCalc);
+
+                        setTransactions(
+                            [
+                                ...filteredIncome.map((t) => ({ ...t, type: "income" })),
+                                ...filteredExpense.map((t) => ({ ...t, type: "expense" })),
+                            ].sort((a, b) => new Date(b.date) - new Date(a.date))
+                        );
+                    }
+                } catch (error) {
+                    console.log("Error fetching transactions:", error);
                 }
-            } catch (error) {
-                console.log("Error fetching transactions:", error);
-            }
-        };
+            };
 
-        fetchTransactions();
-    }, [user]);
+            fetchTransactions();
+        }, [user])
+    );
 
     useEffect(() => {
         if (!user) {
@@ -152,7 +164,7 @@ const Home = () => {
 
     return (
         
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '' }}>
             <FlatList
                 data={[]} // empty since we don't need this FlatList to render actual data
                 renderItem={null}
@@ -195,8 +207,21 @@ const Home = () => {
 
             {/* Floating Button */}
             <View style={{ position: 'absolute', bottom: 40, right: 20 }}>
+                {showMenu && (
+                    <View style={styles.popup}>
+                        <TouchableOpacity onPress={() => handleSelect('income')} style={styles.option}>
+                            <Text>Income</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleSelect('expense')} style={styles.option}>
+                            <Text>Expense</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleSelect('loan')} style={styles.option}>
+                            <Text>Loan</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('AddTransaction')}
+                    onPress={() => setShowMenu(prev => !prev)}
                     style={styles.floatingButton}
                 >
                     <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 30 }}>+</Text>
@@ -252,5 +277,27 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
+    },
+    floatingButton: {
+        backgroundColor: '#26897C',
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 5,
+    },
+    popup: {
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 10,
+        position: 'absolute',
+        bottom: 70,
+        right: 0,
+        elevation: 4,
+        width: 120
+    },
+    option: {
+        padding: 8,
     },
 });

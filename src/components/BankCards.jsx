@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 // import { useAuth } from '../context/AuthContext';
 import firestore from '@react-native-firebase/firestore';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 
 const BankCards = ({ user }) => {
@@ -12,19 +12,21 @@ const BankCards = ({ user }) => {
     // const { user } = useAuth();
     const navigation = useNavigation();
 
-    useEffect(() => {
-        const fetchBanks = async () => {
-            if (!user) return;
-            const userRef = firestore().collection("banks").doc(user.uid);
-            const docSnap = await userRef.get();
-            if (docSnap.exists) {
-                const banksData = docSnap.data();
-                setAccounts(banksData?.banks || []);
-            }
-        };
+    useFocusEffect(
+        useCallback(() => {
+            const fetchBanks = async () => {
+                if (!user) return;
+                const userRef = firestore().collection("banks").doc(user.uid);
+                const docSnap = await userRef.get();
+                if (docSnap.exists) {
+                    const banksData = docSnap.data();
+                    setAccounts(banksData?.banks || []);
+                }
+            };
 
-        fetchBanks();
-    }, []);
+            fetchBanks();
+        }, [])
+    );
 
     return (
         <TouchableOpacity style={styles.container} activeOpacity={0.8}>
