@@ -17,12 +17,12 @@ const Tab = createBottomTabNavigator();
 // Image imports (update paths based on your actual structure)
 const icons = {
     Home: {
-        active: require('../../assets/home.png'),
-        inactive: require('../../assets/home.png'),
+        active: require('../../assets/homei.png'),
+        inactive: require('../../assets/homei.png'),
     },
     Accounts: {
-        active: require('../../assets/wallet.png'),
-        inactive: require('../../assets/wallet.png'),
+        active: require('../../assets/banki.png'),
+        inactive: require('../../assets/banki.png'),
     },
     TransactionHistory: {
         active: require('../../assets/transaction.png'),
@@ -51,12 +51,21 @@ const BottomTabs = () => {
                 tabBarIcon: ({ focused }) => {
                     const icon = icons[route.name][focused ? 'active' : 'inactive'];
                     return (
-                        <Image
-                            source={icon}
-                            style={{ width: 24, height: 24, resizeMode: 'contain' }}
-                        />
+                        <View
+                            style={{
+                                backgroundColor: focused ? '#e0f7f5' : 'transparent', // ✅ ACTIVE TAB COLOR
+                                borderRadius: 12,
+                                padding:8,
+                            }}
+                        >
+                            <Image
+                                source={icon}
+                                style={{ width: 28, height: 24, resizeMode: 'contain', tintColor: focused ? '#26897C' : '#555' }}
+                            />
+                        </View>
                     );
                 },
+                
                 tabBarShowLabel: false,
                 tabBarStyle: {
                     height: 60,
