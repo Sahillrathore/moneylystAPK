@@ -16,30 +16,31 @@ import { decryptData } from '../utils/encryption';
 
 const More = () => {
     const { user, setUser } = useAuth();
+    
     const navigation = useNavigation();
 
-    // const handleLogout = () => {
-    //     Alert.alert('Logout', 'Are you sure you want to logout?', [
-    //         { text: 'Cancel', style: 'cancel' },
-    //         {
-    //             text: 'Logout',
-    //             style: 'destructive',
-    //             onPress: async () => {
-    //                 await auth().signOut();
-    //                 setUser(null);
-    //                 navigation.replace('Login');
-    //             },
-    //         },
-    //     ]);
-    // };
-
-    const handleLogout = async () => {
-        console.log('logout');
-        
-        await auth().signOut();
-        setUser(null);
-        // navigation.replace('Login');
+    const handleLogout = () => {
+        Alert.alert('Logout', 'Are you sure you want to logout?', [
+            { text: 'Cancel', style: 'cancel' },
+            {
+                text: 'Logout',
+                style: 'destructive',
+                onPress: async () => {
+                    await auth().signOut();
+                    setUser(null);
+                    navigation.replace('Login');
+                },
+            },
+        ]);
     };
+
+    // const handleLogout = async () => {
+    //     console.log('logout');
+        
+    //     await auth().signOut();
+    //     setUser(null);
+    //     // navigation.replace('Login');
+    // };
       
     
     return (
@@ -47,7 +48,7 @@ const More = () => {
             <View style={styles.avatarSection}>
                 <Image source={require('../../assets/profile.png')} style={styles.avatar} />
             </View>
-            <Text style={styles.name}>{decryptData(user?.username) || 'Unknown User'}</Text>
+            <Text style={styles.name}>{decryptData(user?.username) || decryptData(user.name)}</Text>
 
             <View style={styles.grid}>
                 <GridItem
