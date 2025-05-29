@@ -61,11 +61,11 @@ const Categories = () => {
             const transactionSnap = await transactionRef.get();
             if (transactionSnap.exists) {
                 const data = transactionSnap.data();
-                const allTransactions = [...(data.income || []), ...(data.expense || [])];
+                const allTransactions = [...(data?.income || []), ...(data?.expense || [])];
 
                 const isUsed = allTransactions.some(
                     t =>
-                        t.category.toLowerCase() === categoryToDelete.category.toLowerCase() &&
+                        t.category?.toLowerCase() === categoryToDelete.category?.toLowerCase() &&
                         t.type === categoryToDelete.type
                 );
 
