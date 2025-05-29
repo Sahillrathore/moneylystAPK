@@ -11,7 +11,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
-import { doc, getDoc } from "firebase/firestore"; // for compatibility, but we use firestore().doc
 import { decryptData } from "../utils/encryption";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";

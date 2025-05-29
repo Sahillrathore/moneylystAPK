@@ -78,7 +78,7 @@ const BottomTabs = () => {
             <Tab.Screen name="Accounts" component={Accounts} />
             <Tab.Screen name="TransactionHistory" component={TransactionHistory} />
             <Tab.Screen name="LoanSummary" component={LoanSummary} />
-            <Tab.Screen name="Analytics" component={Analytics} />
+            {/* <Tab.Screen name="Analytics" component={Analytics} /> */}
             <Tab.Screen name="More" component={More} />
             {/* <Tab.Screen name="AddLoan" component={Analytics} /> */}
         </Tab.Navigator>
