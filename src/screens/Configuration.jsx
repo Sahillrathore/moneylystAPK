@@ -15,15 +15,16 @@ const settings = [
         items: [
             { label: 'Income Category Setting', route: 'Categories', params: { type: 'income' } },
             { label: 'Expenses Category Setting', route: 'Categories', params: { type: 'expense' } },
-            { label: 'Budget Setting', route: 'BudgetSetting' },
+            { label: 'Manage Lenders', route: 'ManageLenders' },
+            // { label: 'Budget Setting', route: 'BudgetSetting' },
         ],
     },
     {
         title: 'Configuration',
         items: [
-            { label: 'Main Currency Setting', value: 'INR (₹)', route: 'MainCurrency' },
-            { label: 'Start Screen (Daily/Calendar)', value: 'Daily', route: 'StartScreen' },
-            { label: 'Monthly Start Date', value: 'Every 1', route: 'MonthlyStartDate' },
+            { label: 'Main Currency Setting', value: 'INR (₹)', route: 'Configuration' },
+            { label: 'Start Screen (Daily/Calendar)', value: 'Daily', route: 'Configuration' },
+            { label: 'Monthly Start Date', value: 'Every 1', route: 'Configuration' },
         ],
     },
 ];

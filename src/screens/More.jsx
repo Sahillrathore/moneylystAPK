@@ -16,7 +16,7 @@ import { decryptData } from '../utils/encryption';
 
 const More = () => {
     const { user, setUser } = useAuth();
-    
+
     const navigation = useNavigation();
 
     const handleLogout = () => {
@@ -28,7 +28,7 @@ const More = () => {
                 onPress: async () => {
                     await auth().signOut();
                     setUser(null);
-                    navigation.replace('Login');
+                    // navigation.navigate('Login')
                 },
             },
         ]);
@@ -36,19 +36,19 @@ const More = () => {
 
     // const handleLogout = async () => {
     //     console.log('logout');
-        
+
     //     await auth().signOut();
     //     setUser(null);
     //     // navigation.replace('Login');
     // };
-      
-    
+
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.avatarSection}>
                 <Image source={require('../../assets/profile.png')} style={styles.avatar} />
             </View>
-            <Text style={styles.name}>{decryptData(user?.username) || decryptData(user.name)}</Text>
+            <Text style={styles.name}>{decryptData(user?.username) || decryptData(user?.name)}</Text>
 
             <View style={styles.grid}>
                 <GridItem
@@ -59,21 +59,22 @@ const More = () => {
                             resizeMode="contain"
                         />
                     }
+                    onPress={() => navigation.navigate('Profile')}
                     label="Profile"
                 />
 
                 <GridItem
                     icon={
                         <Image
-                        source={require('../../assets/settings.png')}
-                        style={styles.icon}
-                        resizeMode="contain"
+                            source={require('../../assets/settings.png')}
+                            style={styles.icon}
+                            resizeMode="contain"
                         />
                     }
                     onPress={() => navigation.navigate('Configuration')}
                     label="Configuration"
                 />
-                
+
                 <GridItem
                     icon={
                         <Image

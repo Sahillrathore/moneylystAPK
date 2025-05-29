@@ -9,7 +9,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Welcome from "./src/screens/Welcome";
 import Signup from "./src/screens/Signup";
-import Login from "./src/screens/Login";
 import AddTransaction from "./src/screens/AddTransaction";
 import BottomTabs from "./src/navigation/BottomTabs";
 import Configuration from "./src/screens/Configuration";
@@ -22,6 +21,9 @@ import { View, ActivityIndicator } from "react-native";
 import AddLoan from "./src/screens/AddLoan";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LenderLoanDetails from "./src/screens/LenderLoanDetails";
+import Login from "./src/screens/Login";
+import ManageLenders from "./src/screens/ManageLenders";
+import ProfileScreen from "./src/screens/Profile";
 
 const Stack = createStackNavigator();
 
@@ -41,9 +43,9 @@ function AppNavigator() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!user ? (
           <>
+            <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Welcome" component={Welcome} />
             <Stack.Screen name="Signup" component={Signup} />
-            <Stack.Screen name="Login" component={Login} />
           </>
         ) : !user.hasOnboarded ? (
           <Stack.Screen name="Onboarding" component={Onboarding} />
@@ -56,6 +58,9 @@ function AppNavigator() {
             <Stack.Screen name="Categories" component={Categories} />
             <Stack.Screen name="NewCategory" component={NewCategory} />
             <Stack.Screen name="LenderLoanDetails" component={LenderLoanDetails} />
+            <Stack.Screen name="ManageLenders" component={ManageLenders} />
+            {/* <Stack.Screen name="Login" component={Login} /> */}
+            <Stack.Screen name="Profile" component={ProfileScreen} />
           </>
         )}
       </Stack.Navigator>
