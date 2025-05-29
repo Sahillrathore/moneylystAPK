@@ -1,11 +1,11 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import {
     ScrollView,
     StyleSheet,
     Text,
     View,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import firestore from "@react-native-firebase/firestore";
 import moment from "moment";
 import { useAuth } from "../../context/AuthContext";
@@ -30,106 +30,114 @@ const TransactionHistory = () => {
         });
     }, [navigation]);
 
-    useEffect(() => {
-        const fetchTransactions = async () => {
-            if (!user?.uid) return;
+    useFocusEffect(
+        useCallback(() => {
+            const fetchTransactions = async () => {
+                if (!user?.uid) return;
 
-            const docRef = firestore().collection("transactions").doc(decryptData(user.uid));
-            const docSnap = await docRef.get();
+                const docRef = firestore().collection("transactions").doc(decryptData(user.uid));
+                const docSnap = await docRef.get();
 
-            if (docSnap.exists) {
-                const data = decryptData(docSnap.data());
-                const incomes = data.income || [];
-                const expenses = data.expense || [];
+                if (docSnap.exists) {
+                    const data = decryptData(docSnap.data());
+                    const incomes = data.income || [];
+                    const expenses = data.expense || [];
 
-                const allTransactions = [
-                    ...incomes.map((tx) => ({ ...tx, type: "income" })),
-                    ...expenses.map((tx) => ({ ...tx, type: "expense" })),
-                ];
+                    const allTransactions = [
+                        ...incomes.map((tx) => ({ ...tx, type: "income" })),
+                        ...expenses.map((tx) => ({ ...tx, type: "expense" })),
+                    ];
 
-                allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-                const grouped = {};
+                    const grouped = {};
 
-                allTransactions.forEach((tx) => {
-                    const month = moment(tx.date).format("MMMM YYYY");
-                    if (!grouped[month]) {
-                        grouped[month] = { transactions: [], income: 0, expense: 0 };
-                    }
+                    allTransactions.forEach((tx) => {
+                        const month = moment(tx.date).format("MMMM YYYY");
+                        if (!grouped[month]) {
+                            grouped[month] = { transactions: [], income: 0, expense: 0 };
+                        }
 
-                    grouped[month].transactions.push(tx);
+                        grouped[month].transactions.push(tx);
 
-                    if (tx.type === "income") grouped[month].income += tx.amount;
-                    if (tx.type === "expense") grouped[month].expense += tx.amount;
-                });
+                        if (tx.type === "income") grouped[month].income += tx.amount;
+                        if (tx.type === "expense") grouped[month].expense += tx.amount;
+                    });
 
-                setGroupedData(grouped);
-            }
-        };
+                    setGroupedData(grouped);
+                }
+            };
 
-        fetchTransactions();
-    }, [user?.uid]);
+            fetchTransactions();
+        }, [user?.uid])
+    );
 
     return (
         <ScrollView>
             <View style={styles.container}>
-                {Object.keys(groupedData).map((month) => (
-                    <View key={month} style={styles.monthBlock}>
-                        <View style={styles.monthHeader}>
-                            <Text style={styles.monthTitle}>{month}</Text>
-                            <View>
-                                <Text style={styles.summary}>
-                                    Income:{" "}
-                                    <Text style={styles.incomeAmount}>
-                                        + ₹{groupedData[month].income.toFixed()}
-                                    </Text>
-                                </Text>
-                                <Text style={styles.summary}>
-                                    Expense:{" "}
-                                    <Text style={styles.expenseAmount}>
-                                        - ₹{groupedData[month].expense.toFixed()}
-                                    </Text>
-                                </Text>
-                            </View>
-                        </View>
-
-                        {groupedData[month].transactions.map((tx, i) => (
-                            <View key={i} style={styles.transactionRow}>
-                                <View
-                                    style={[
-                                        styles.circle,
-                                        {
-                                            backgroundColor:
-                                                alphabetColors[tx?.category[0]?.toLowerCase()] || "#C68EFD",
-                                        },
-                                    ]}
-                                >
-                                    <Text style={styles.circleText}>
-                                        {tx.category[0].toUpperCase()}
-                                    </Text>
-                                </View>
-
-                                <View style={{ flex: 1, marginLeft: 10 }}>
-                                    <Text style={styles.category}>{tx.category}</Text>
-                                    <Text style={styles.date}>
-                                        {moment(tx.date).format("MMM D, YYYY")}
-                                    </Text>
-                                </View>
-
-                                <Text
-                                    style={[
-                                        styles.amount,
-                                        tx.type === "income" ? styles.income : styles.expense,
-                                    ]}
-                                >
-                                    {tx.type === "income"
-                                        ? `+ ₹${tx.amount}`
-                                        : `- ₹${tx.amount}`}
-                                </Text>
-                            </View>
-                        ))}
+                {Object.keys(groupedData).length === 0 ? (
+                    <View style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}>No data here</Text>
                     </View>
-                ))}
+                ) : (
+                    Object.keys(groupedData).map((month) => (
+                        <View key={month} style={styles.monthBlock}>
+                            <View style={styles.monthHeader}>
+                                <Text style={styles.monthTitle}>{month}</Text>
+                                <View>
+                                    <Text style={styles.summary}>
+                                        Income:{" "}
+                                        <Text style={styles.incomeAmount}>
+                                            + ₹{groupedData[month].income.toFixed()}
+                                        </Text>
+                                    </Text>
+                                    <Text style={styles.summary}>
+                                        Expense:{" "}
+                                        <Text style={styles.expenseAmount}>
+                                            - ₹{groupedData[month].expense.toFixed()}
+                                        </Text>
+                                    </Text>
+                                </View>
+                            </View>
+
+                            {groupedData[month].transactions.map((tx, i) => (
+                                <View key={i} style={styles.transactionRow}>
+                                    <View
+                                        style={[
+                                            styles.circle,
+                                            {
+                                                backgroundColor:
+                                                    alphabetColors[tx?.category[0]?.toLowerCase()] || "#C68EFD",
+                                            },
+                                        ]}
+                                    >
+                                        <Text style={styles.circleText}>
+                                            {tx.category[0].toUpperCase()}
+                                        </Text>
+                                    </View>
+
+                                    <View style={{ flex: 1, marginLeft: 10 }}>
+                                        <Text style={styles.category}>{tx.category}</Text>
+                                        <Text style={styles.date}>
+                                            {moment(tx.date).format("MMM D, YYYY")}
+                                        </Text>
+                                    </View>
+
+                                    <Text
+                                        style={[
+                                            styles.amount,
+                                            tx.type === "income" ? styles.income : styles.expense,
+                                        ]}
+                                    >
+                                        {tx.type === "income"
+                                            ? `+ ₹${tx.amount}`
+                                            : `- ₹${tx.amount}`}
+                                    </Text>
+                                </View>
+                            ))}
+                        </View>
+                    ))
+                )}
             </View>
         </ScrollView>
     );
@@ -212,4 +220,16 @@ const styles = StyleSheet.create({
     expense: {
         color: "red",
     },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingVertical: 50,
+        backgroundColor: "#f4f4f4",
+    },
+    emptyText: {
+        fontSize: 16,
+        color: "#666",
+    },
+
 });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     ActivityIndicator,
     ScrollView,
@@ -8,11 +8,11 @@ import {
     View,
     Image,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import firestore from '@react-native-firebase/firestore';
 import { useAuth } from '../../context/AuthContext';
 import { decryptData } from '../utils/encryption';
 import CreateBankModal from '../components/CreateBankModal';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Accounts = ({ navigation }) => {
     const { user, setNotification } = useAuth();
@@ -32,9 +32,11 @@ const Accounts = ({ navigation }) => {
         setLoading(false);
     };
 
-    useEffect(() => {
-        if (user) fetchBanks();
-    }, [user]);
+    useFocusEffect(
+        useCallback(() => {
+            if (user) fetchBanks();
+        }, [user])
+    );
 
     const deleteBank = async (bank) => {
         if (bank.accountType === 'Cash') {
@@ -77,7 +79,7 @@ const Accounts = ({ navigation }) => {
                                 style={styles.icon}
                                 resizeMode="contain"
                             />
-                            
+
                         </TouchableOpacity>
                         <Text style={styles.actionText}>Add</Text>
                     </View>

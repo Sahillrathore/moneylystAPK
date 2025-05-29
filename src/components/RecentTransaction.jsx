@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../context/AuthContext";
 import firestore from "@react-native-firebase/firestore";
 
@@ -19,37 +19,39 @@ const RecentTransactions = () => {
     const navigation = useNavigation();
     const [transactions, setTransactions] = useState([]);
 
-    useEffect(() => {
-        const fetchTransactions = async () => {
-            try {
-                if (!user?.uid) return;
+    useFocusEffect(
+        useCallback(() => {
+            const fetchTransactions = async () => {
+                try {
+                    if (!user?.uid) return;
 
-                const docRef = firestore().collection("transactions").doc(decryptData(user?.uid));
-                const docSnap = await docRef.get();
+                    const docRef = firestore().collection("transactions").doc(decryptData(user?.uid));
+                    const docSnap = await docRef.get();
 
-                if (docSnap.exists) {
-                    const data = decryptData(docSnap.data());
-                    const incomes = data?.income || [];
-                    const expenses = data?.expense || [];
+                    if (docSnap.exists) {
+                        const data = decryptData(docSnap.data());
+                        const incomes = data?.income || [];
+                        const expenses = data?.expense || [];
 
-                    let combinedTransactions = [
-                        ...incomes?.map((tx) => ({ ...tx, type: "income" })),
-                        ...expenses?.map((tx) => ({ ...tx, type: "expense" })),
-                    ];
+                        let combinedTransactions = [
+                            ...incomes?.map((tx) => ({ ...tx, type: "income" })),
+                            ...expenses?.map((tx) => ({ ...tx, type: "expense" })),
+                        ];
 
-                    combinedTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    const recentFive = combinedTransactions?.slice(0, 5);
-                    setTransactions(recentFive);
-                } else {
-                    console.log("No transaction data found for this user.");
+                        combinedTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+                        const recentFive = combinedTransactions?.slice(0, 5);
+                        setTransactions(recentFive);
+                    } else {
+                        console.log("No transaction data found for this user.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching transactions:", error);
                 }
-            } catch (error) {
-                console.error("Error fetching transactions:", error);
-            }
-        };
+            };
 
-        if (user?.uid) fetchTransactions();
-    }, [user?.uid]);
+            if (user?.uid) fetchTransactions();
+        }, [user?.uid])
+    );
 
     return (
         <View style={styles.container}>
