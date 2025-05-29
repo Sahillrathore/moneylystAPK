@@ -23,6 +23,7 @@ const AccountDetailsStep: React.FC<Props> = ({ onNext }) => {
     const [createDate, setCreationDate] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [initialBalance, setBalance] = useState('');
+    const [error, setError] = useState<string | null>(null);
     const { user } = useAuth();
 
     const handleDateChange = (_: any, selectedDate?: Date) => {
@@ -31,11 +32,15 @@ const AccountDetailsStep: React.FC<Props> = ({ onNext }) => {
     };
 
     const handleContinue = async () => {
+        if(!accountName || !accountType || !createDate) {
+            setError('Please fill all fields');
+            return;
+        }
         try {
             const newBank = {
                 accountName,
                 accountType,
-                initialBalance: parseFloat(initialBalance),
+                initialBalance: parseFloat(initialBalance) || 0,
                 bankId: uuid.v4(),
                 createDate: createDate.toISOString().split('T')[0],
             };
@@ -51,6 +56,7 @@ const AccountDetailsStep: React.FC<Props> = ({ onNext }) => {
             });
 
             console.log('Bank added successfully');
+            setError(null);
             onNext();
         } catch (error) {
             console.error('Error adding bank:', error);
@@ -61,6 +67,8 @@ const AccountDetailsStep: React.FC<Props> = ({ onNext }) => {
         <View style={styles.container}>
             <View style={styles.content}>
                 <Text style={styles.title}>Account Details</Text>
+
+                {error && <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text>} 
 
                 <Text style={styles.label}>Account Name</Text>
                 <TextInput

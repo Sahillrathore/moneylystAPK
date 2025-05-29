@@ -44,7 +44,7 @@ const CashAmount: React.FC<Props> = ({ onNext }) => {
 
             const updatedBanks = banks.map((account: any) =>
                 account.accountType === "Cash"
-                    ? { ...account, initialBalance: parseFloat(amount) }
+                    ? { ...account, initialBalance: parseFloat(amount) || 0 }
                     : account
             );
 

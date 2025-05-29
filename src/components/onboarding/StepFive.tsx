@@ -94,7 +94,7 @@ const CategoryStep = () => {
                 <View key={index} style={styles.tag}>
                     <Text style={styles.tagText}>{tag}</Text>
                     <TouchableOpacity onPress={() => removeTag(type, index)}>
-                        <Text>Close</Text>
+                        <Text style={{color: 'red'}}>X</Text>
                     </TouchableOpacity>
                 </View>
             ))}
