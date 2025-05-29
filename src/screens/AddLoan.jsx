@@ -21,13 +21,21 @@ const AddLoan = () => {
     const navigation = useNavigation();
     const { user, setNotification } = useAuth();
 
+    const formatDate = (date) => {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0'); // months are 0-based
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     const [formData, setFormData] = useState({
         amount: '',
         accountName: '',
         type: 'expense',
         lenderName: '',
         businessName: '',
-        date: new Date(),
+        date: formatDate(new Date()),
         description: '',
     });
 
@@ -44,10 +52,10 @@ const AddLoan = () => {
         navigation.setOptions({ headerTitle: 'Add Loan' });
     }, [navigation]);
 
-    const formatDate = (date) => {
-        const d = new Date(date);
-        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    };
+    // const formatDate = (date) => {
+    //     const d = new Date(date);
+    //     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    // };
 
     const fetchBanks = async () => {
         const ref = firestore().collection('banks').doc(decryptData(user.uid));
@@ -131,7 +139,16 @@ const AddLoan = () => {
                 createdAt: Date.now(),
             };
 
-            await updateBankBalance(formData.accountName, formData.amount, formData.type);
+            if (formData.accountName) {
+                const bank = banks.find(b => b.accountName === formData.accountName);
+                console.log(formData.date, bank.createDate);
+
+                if (formData.accountName === 'Cash' || formData.date >= bank.createDate) {
+                    console.log('Updating bank balance', formData);
+                    await updateBankBalance(bank.accountName, formData.amount, typeField);
+                }
+            }
+            // await updateBankBalance(formData.accountName, formData.amount, formData.type);
 
             await docRef.set(
                 {

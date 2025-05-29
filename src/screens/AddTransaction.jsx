@@ -75,8 +75,8 @@ const AddTransaction = () => {
 
 
     const updateBankBalance = async (bankId, amount, type) => {
-        // console.log(bankId, amount, type);
-
+        console.log(bankId, amount, type);
+        
         const ref = firestore().collection('banks').doc(decryptData(user.uid));
         const snapshot = await ref.get();
         if (snapshot.exists) {
@@ -93,7 +93,6 @@ const AddTransaction = () => {
                     : bank
             );
             await ref.update({ banks: updatedBanks });
-            fetchBanks();
         }
     };
 
@@ -153,12 +152,10 @@ const AddTransaction = () => {
 
             if (formData.accountName) {
                 const bank = banks.find(b => b.accountName === formData.accountName);
-                console.log('ifTrue22');
                 console.log(formData.date, bank.createDate);
 
-                if (formData.date >= bank.createDate) {
-                    console.log('ifTrue3');
-
+                if (formData.accountName === 'Cash' || formData.date >= bank.createDate) {
+                    console.log('Updating bank balance', formData);
                     await updateBankBalance(bank.accountName, formData.amount, typeField);
                 }
             }
@@ -172,7 +169,7 @@ const AddTransaction = () => {
                     .set({ transactions: firestore.FieldValue.arrayUnion({ ...transactionData, date: formData.date }) }, { merge: true });
             }
 
-            if (isRecurring) {
+            if (isRecurring) {      
                 const recurringTransaction = {
                     ...transactionData,
                     recurringTransactionId: uuid.v4(),
