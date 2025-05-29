@@ -41,9 +41,9 @@ const Signup: React.FC = () => {
         const checkUser = async () => {
             const currentUser = auth().currentUser;
 
-            if (currentUser) {
-                navigation.replace('Main'); // or 'Main' if you have it as a screen
-            }
+            // if (currentUser) {
+            //     navigation.replace('Main'); // or 'Main' if you have it as a screen
+            // }
         };
 
         checkUser();
@@ -112,7 +112,7 @@ const Signup: React.FC = () => {
             await AsyncStorage.setItem('user', JSON.stringify(userData));
             setUser?.(userData);
             setNotification?.({ msg: 'Account created successfully!', type: 'success' });
-            navigation.replace('Main'); // change to 'Onboarding'
+            navigation.replace('Onboarding'); // change to 'Onboarding'
         } catch (error: any) {
             console.log(error);
             setNotification?.({ msg: error.message, type: 'error' });

@@ -27,9 +27,8 @@ const Welcome: React.FC = () => {
 
     useEffect(() => {
         const checkUser = async () => {
-            const currentUser = auth().currentUser;
 
-            if (currentUser) {
+            if (user) {
                 navigation.replace('Main'); // or 'Main' if you have it as a screen
             }
         };

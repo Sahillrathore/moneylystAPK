@@ -20,19 +20,19 @@ const LoanSummary = () => {
                 const lendersSnap = await firestore().collection("categories").doc(decryptData(user.uid)).get();
                 const txnsSnap = await firestore().collection("transactions").doc(decryptData(user.uid)).get();
 
-                const lenderList = lendersSnap.exists ? decryptData(lendersSnap.data()).lenders : [];
-                const txnData = txnsSnap.exists ? decryptData(txnsSnap.data()) : { income: [], expense: [] };
+                const lenderList = lendersSnap.exists ? decryptData(lendersSnap?.data())?.lenders : [];
+                const txnData = txnsSnap.exists ? decryptData(txnsSnap?.data()) : { income: [], expense: [] };
 
-                const allTxns = [...(txnData.income || []), ...(txnData.expense || [])];
-                const loanTxns = allTxns.filter(txn => txn.category === "loan");
+                const allTxns = [...(txnData?.income || []), ...(txnData?.expense || [])];
+                const loanTxns = allTxns?.filter(txn => txn?.category === "loan");
 
                 const loanTotals = {};
-                lenderList.forEach((lender) => {
+                lenderList?.forEach((lender) => {
                     const name = lender?.name || lender;
-                    const lenderTxns = loanTxns.filter(txn => txn.lenderName === name);
+                    const lenderTxns = loanTxns?.filter(txn => txn.lenderName === name);
 
-                    const totalExpense = lenderTxns.filter(t => t.type === "expense").reduce((sum, t) => sum + (t.amount || 0), 0);
-                    const totalIncome = lenderTxns.filter(t => t.type === "income").reduce((sum, t) => sum + (t.amount || 0), 0);
+                    const totalExpense = lenderTxns?.filter(t => t.type === "expense")?.reduce((sum, t) => sum + (t.amount || 0), 0);
+                    const totalIncome = lenderTxns?.filter(t => t.type === "income")?.reduce((sum, t) => sum + (t.amount || 0), 0);
 
                     loanTotals[name] = totalExpense - totalIncome;
                 });
@@ -68,7 +68,12 @@ const LoanSummary = () => {
                         </TouchableOpacity>
                     );
                 }}
-                contentContainerStyle={{ paddingBottom: 50 }}
+                contentContainerStyle={{ paddingBottom: 50, flexGrow: 1 }}
+                ListEmptyComponent={
+                    <View style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}>No data here</Text>
+                    </View>
+                }
             />
         </View>
     );
