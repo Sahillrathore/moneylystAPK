@@ -48,11 +48,11 @@ const Signup: React.FC = () => {
 
         checkUser();
     }, []);
-
+ 
     const handleChange = (key: string, value: string) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
     };
-
+ 
     const handleSignup = async () => {
         
         if (!formData.username || !formData.email || !formData.password) {
