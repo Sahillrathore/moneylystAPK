@@ -14,11 +14,13 @@ import firestore from "@react-native-firebase/firestore";
 import { decryptData } from "../utils/encryption";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+import axios from '../utils/axios'
 
 const Login = () => {
     const { setUser, user } = useAuth();
     const navigation = useNavigation();
-
+    console.log(user);
+    
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -45,51 +47,38 @@ const Login = () => {
 
         try {
             setLoading(true);
-            const userCredential = await auth().signInWithEmailAndPassword(email, password);
-            const user1 = userCredential.user;
-            // console.log(user);
-            
-            const userDoc = await firestore().collection("users").doc(user1.uid).get();
-            console.log(userDoc);
-            if (!userDoc.exists) {
-                setError("User data not found.");
-                return;
-            }
 
-            const userData = decryptData(userDoc.data());
-            console.log(userDoc.data());
-            
+            const res = await axios.post('/api/auth/login', { email, password });
 
-            try {
+            if (res.data.success) {
+                const token = res.data.token;
+                const userData = res.data.user;
+
+                // Store token and user data in AsyncStorage
+                await AsyncStorage.setItem("token", token);
                 await AsyncStorage.setItem("user", JSON.stringify(userData));
-                setUser(userData);
-                console.log(user);
-                
-            } catch (err) {
-                console.error("Failed to store user data:", err);
-            }
 
-            if (userData?.hasOnboarded) {
-                navigation.reset({ index: 0, routes: [{ name: "Main" }] });
-                
+                setUser(userData); // Update AuthContext
+
+                // Navigate to Main or Onboarding
+                if (userData?.hasOnboarded) {
+                    navigation.reset({ index: 0, routes: [{ name: "Main" }] });
+                } else {
+                    navigation.reset({ index: 0, routes: [{ name: "Main" }] });
+                }
             } else {
-                navigation.reset({ index: 0, routes: [{ name: "Onboarding" }] });
+                setError(res.data.message || "Invalid email or password");
             }
         } catch (err) {
             console.log("Login Error:", err);
-            if (err.code === "auth/user-not-found") {
-                setError("No account found with this email.");
-            } else if (err.code === "auth/wrong-password") {
-                setError("Incorrect password.");
-            } else if (err.code === "auth/invalid-email") {
-                setError("Invalid email address.");
-            } else {
-                setError("Something went wrong. Please try again.");
-            }
+            setError(
+                err.response?.data?.message || "Something went wrong. Please try again."
+            );
         } finally {
             setLoading(false);
         }
     };
+    
 
     return (
         // <SafeAreaView style={styles.safeArea}>

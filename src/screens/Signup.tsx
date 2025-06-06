@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
     StyleSheet,
     Text,
@@ -9,11 +9,9 @@ import {
     Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import { useAuth } from '../../context/AuthContext'; // adjust path as needed
-import { encryptData } from '../utils/encryption'; // adjust path as needed
+import { useAuth } from '../../context/AuthContext';
+import axios from '../utils/axios';
+
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type RootStackParamList = {
@@ -21,13 +19,14 @@ type RootStackParamList = {
     Signup: undefined;
     Onboarding: undefined;
     Home: undefined;
+    VerifyOTPScreen: { email: string; username: string; password: string };
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>;
 
 const Signup: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
-    const { setUser, setNotification } = useAuth();
+    const { setNotification } = useAuth();
 
     const [formData, setFormData] = useState({
         username: '',
@@ -37,24 +36,11 @@ const Signup: React.FC = () => {
 
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const checkUser = async () => {
-            const currentUser = auth().currentUser;
-
-            // if (currentUser) {
-            //     navigation.replace('Main'); // or 'Main' if you have it as a screen
-            // }
-        };
-
-        checkUser();
-    }, []);
- 
     const handleChange = (key: string, value: string) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
     };
- 
+
     const handleSignup = async () => {
-        
         if (!formData.username || !formData.email || !formData.password) {
             return setNotification?.({ msg: 'Please fill all fields', type: 'error' });
         }
@@ -66,59 +52,36 @@ const Signup: React.FC = () => {
         try {
             setLoading(true);
 
-            const userCredential = await auth().createUserWithEmailAndPassword(
-                formData.email,
-                formData.password
-            );
-
-            const user = userCredential.user;
-            await user.updateProfile({ displayName: formData.username });
-
-            const userData = {
-                uid: user.uid,
-                username: formData.username,
+            const res = await axios.post('/api/auth/verify/email', {
+                name: formData.username,
                 email: formData.email,
-                balance: 0,
-            };
+                password: formData.password,
+            });
+            console.log(res);
 
-            // const encryptedUserData = encryptData(userData);
-            const encryptedUserData = userData;
+            if (res.data) {
+                console.log('successs');
 
-            const banks = {
-                banks: [
-                    {
-                        accountName: 'Cash',
-                        accountType: 'Cash',
-                        bankId: Date.now().toString(),
-                        initialBalance: 0,
-                    },
-                ],
-            };
+                setNotification?.({ msg: res.data.message, type: 'success' });
 
-            const categories = {
-                category: [
-                    { category: 'food', type: 'expense' },
-                    { category: 'transport', type: 'expense' },
-                    { category: 'beauty', type: 'expense' },
-                    { category: 'health', type: 'expense' },
-                    { category: 'education', type: 'expense' },
-                ],
-            };
-
-            await firestore().collection('users').doc(user.uid).set(encryptedUserData);
-            await firestore().collection('banks').doc(user.uid).set(banks);
-            await firestore().collection('categories').doc(user.uid).set(categories);
-
-            await AsyncStorage.setItem('user', JSON.stringify(userData));
-            setUser?.(userData);
-            setNotification?.({ msg: 'Account created successfully!', type: 'success' });
-            navigation.replace('Onboarding'); // change to 'Onboarding'
-        } catch (error: any) {
-            console.log(error);
-            setNotification?.({ msg: error.message, type: 'error' });
+                navigation.navigate('VerifyOTPScreen', {
+                    email: formData.email,
+                    username: formData.username,
+                    password: formData.password,
+                });
+            } else {
+                setNotification?.({ msg: res.data.message || 'Failed to send OTP', type: 'error' });
+            }
+        } catch (err: any) {
+            console.log(err);
+            setNotification?.({
+                msg: err?.response?.data?.message || 'Failed to send OTP',
+                type: 'error',
+            });
         } finally {
             setLoading(false);
         }
+
     };
 
     return (
@@ -203,8 +166,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         fontSize: 18,
         borderColor: '#e5e7eb',
-        color: "#222"
-
+        color: '#222',
     },
     button: {
         backgroundColor: '#26897C',

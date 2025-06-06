@@ -24,6 +24,7 @@ import LenderLoanDetails from "./src/screens/LenderLoanDetails";
 import Login from "./src/screens/Login";
 import ManageLenders from "./src/screens/ManageLenders";
 import ProfileScreen from "./src/screens/Profile";
+import VerifyOTPScreen from "./src/screens/VerifyOtp";
 
 const Stack = createStackNavigator();
 
@@ -46,8 +47,9 @@ function AppNavigator() {
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Welcome" component={Welcome} />
             <Stack.Screen name="Signup" component={Signup} />
+            <Stack.Screen name="VerifyOTPScreen" component={VerifyOTPScreen} />
           </>
-        ) : !user.hasOnboarded ? (
+        ) : user.hasOnboarded ? (
           <Stack.Screen name="Onboarding" component={Onboarding} />
         ) : (
           <>
