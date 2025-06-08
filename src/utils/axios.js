@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const api = axios.create({
-    baseURL: 'http://example:5000', // use your PC IP here
+    baseURL: 'http://example:5000',
 });
 
 // Automatically add token to Authorization header
